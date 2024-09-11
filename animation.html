@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Animation App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            margin: 0 auto;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            transition: all 1s ease;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>Animation App</h1>
+        <div class="box" id="animatedBox"></div>
+
+        <div class="controls">
+            <select id="animationSelector">
+                <option value="rotate">Rotate</option>
+                <option value="bounce">Bounce</option>
+                <option value="slide">Slide</option>
+                <option value="fade">Fade</option>
+                <option value="scale">Scale</option>
+            </select>
+        </div>
+
+        <button id="animateBtn">Animate</button>
+    </div>
+
+    <script>
+        const box = document.getElementById('animatedBox');
+        const animateBtn = document.getElementById('animateBtn');
+        const animationSelector = document.getElementById('animationSelector');
+
+        animateBtn.addEventListener('click', () => {
+            let selectedAnimation = animationSelector.value;
+            
+            // Remove all classes for clean animation
+            box.classList.remove('rotate', 'bounce', 'slide', 'fade', 'scale');
+
+            // Trigger reflow to restart animation
+            void box.offsetWidth;
+
+            // Add the selected animation
+            box.classList.add(selectedAnimation);
+        });
+
+        // Define animations using CSS via JavaScript
+        const styleSheet = document.createElement('style');
+        styleSheet.type = 'text/css';
+        styleSheet.innerText = `
+            .rotate {
+                transform: rotate(360deg);
+            }
+            .bounce {
+                animation: bounce 1s infinite;
+            }
+            .slide {
+                transform: translateX(300px);
+            }
+            .fade {
+                opacity: 0;
+            }
+            .scale {
+                transform: scale(1.5);
+            }
+            @keyframes bounce {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>

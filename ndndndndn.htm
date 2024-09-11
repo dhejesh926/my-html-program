@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Word Processor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toolbar {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button, select, input[type="color"] {
+            margin-right: 10px;
+        }
+
+        #editor {
+            width: 100%;
+            height: calc(100vh - 70px); /* Adjust height to fit the viewport */
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            overflow-y: auto;
+            min-height: 150px;
+            line-height: 1.6;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+
+        #placeholder {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #aaa;
+            pointer-events: none;
+            user-select: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button onclick="execCommand('undo')">Undo</button>
+        <button onclick="execCommand('redo')">Redo</button>
+        <button onclick="saveFile()">Save</button>
+        <button onclick="openFile()">Open</button>
+        <select id="font-family" onchange="updateFontFamily()">
+            <option value="Arial">Arial</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Verdana">Verdana</option>
+        </select>
+        <select id="font-size" onchange="updateFontSize()">
+            <option value="14px">14px</option>
+            <option value="16px">16px</option>
+            <option value="18px">18px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+        </select>
+        <button onclick="execCommand('bold')">Bold</button>
+        <button onclick="execCommand('italic')">Italic</button>
+        <button onclick="execCommand('underline')">Underline</button>
+        <button onclick="execCommand('strikeThrough')">Strike Through</button>
+        <button onclick="execCommand('subscript')">Subscript</button>
+        <button onclick="execCommand('superscript')">Superscript</button>
+        <button onclick="execCommand('justifyLeft')">Align Left</button>
+        <button onclick="execCommand('justifyCenter')">Align Center</button>
+        <button onclick="execCommand('justifyRight')">Align Right</button>
+        <button onclick="execCommand('justifyFull')">Justify</button>
+        <button onclick="execCommand('insertUnorderedList')">Bullet List</button>
+        <button onclick="execCommand('insertOrderedList')">Numbered List</button>
+        <button onclick="execCommand('createLink')">Insert Link</button>
+        <button onclick="execCommand('insertImage')">Insert Image</button>
+        <button onclick="insertTable()">Insert Table</button>
+        <input type="color" id="text-color" onchange="updateTextColor()" title="Text Color">
+        <input type="color" id="bg-color" onchange="updateBackgroundColor()" title="Background Color">
+        <button onclick="highlightText()">Highlight</button>
+    </div>
+    <div class="editor-container">
+        <div id="placeholder">Start typing here...</div>
+        <div id="editor" contenteditable="true" onfocus="hidePlaceholder()" onblur="showPlaceholder()"></div>
+    </div>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const placeholder = document.getElementById('placeholder');
+
+        function execCommand(command) {
+            document.execCommand(command, false, null);
+        }
+
+        function saveFile() {
+            const text = editor.innerHTML;
+            const blob = new Blob([text], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'document.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function openFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.html';
+            input.addEventListener('change', () => {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = () => {
+                    editor.innerHTML = reader.result;
+                    hidePlaceholder();
+                };
+                reader.readAsText(file);
+            });
+            input.click();
+        }
+
+        function updateFontFamily() {
+            const fontFamily = document.getElementById('font-family').value;
+            document.execCommand('fontName', false, fontFamily);
+        }
+
+        function updateFontSize() {
+            const fontSize = document.getElementById('font-size').value;
+            editor.style.fontSize = fontSize;
+        }
+
+        function updateTextColor() {
+            const color = document.getElementById('text-color').value;
+            document.execCommand('foreColor', false, color);
+        }
+
+        function updateBackgroundColor() {
+            const color = document.getElementById('bg-color').value;
+            document.execCommand('backColor', false, color);
+        }
+
+        function highlightText() {
+            const color = document.getElementById('bg-color').value;
+            document.execCommand('backColor', false, color);
+        }
+
+        function insertTable() {
+            const rows = prompt("Enter number of rows:", "2");
+            const cols = prompt("Enter number of columns:", "2");
+            let table = '<table border="1" cellpadding="5" cellspacing="0">';
+            for (let i = 0; i < rows; i++) {
+                table += '<tr>';
+                for (let j = 0; j < cols; j++) {
+                    table += '<td>&nbsp;</td>';
+                }
+                table += '</tr>';
+            }
+            table += '</table>';
+            document.execCommand('insertHTML', false, table);
+        }
+
+        function hidePlaceholder() {
+            placeholder.style.display = 'none';
+        }
+
+        function showPlaceholder() {
+            if (editor.innerHTML.trim() === '') {
+                placeholder.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

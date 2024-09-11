@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        input, textarea, select {
+            margin: 10px 0;
+            padding: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #animator-content, #profile-content, #credits-content {
+            margin: 20px 0;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes scaleUp {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Add more animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+
+        /* Shape Styles */
+        .shape {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+        }
+
+        .circle {
+            border-radius: 50%;
+            background-color: blue;
+        }
+
+        .square {
+            background-color: red;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid green;
+        }
+
+        /* Animate classes */
+        .animate-fade { animation: fadeIn 2s infinite; }
+        .animate-scale { animation: scaleUp 2s infinite; }
+        .animate-rotate { animation: rotate 2s infinite; }
+        .animate-slide { animation: slideIn 2s infinite; }
+        .animate-bounce { animation: bounce 2s infinite; }
+        .animate-shake { animation: shake 2s infinite; }
+    </style>
+</head>
+<body>
+
+    <div id="login-form">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <h2>Welcome, <span id="logged-username"></span></h2>
+        <button onclick="showSection('profile')">Profile</button>
+        <button onclick="showSection('animator')">Animator</button>
+        <button onclick="showSection('credits')">Credits</button>
+
+        <div id="profile-content" class="container hidden">
+            <h3>Profile</h3>
+            <input type="text" id="name" placeholder="Your Name">
+            <input type="email" id="email" placeholder="Your Email">
+            <textarea id="biodata" placeholder="Your Biodata"></textarea>
+            <button onclick="saveProfile()">Save Profile</button>
+            <p id="profile-saved"></p>
+        </div>
+
+        <div id="animator-content" class="container hidden">
+            <h3>Animator</h3>
+
+            <!-- Text Animation Options -->
+            <h4>Animate Text</h4>
+            <select id="text-animation-options">
+                <option value="animate-fade">Fade In</option>
+                <option value="animate-scale">Scale Up</option>
+                <option value="animate-rotate">Rotate</option>
+                <option value="animate-slide">Slide In</option>
+                <option value="animate-bounce">Bounce</option>
+                <option value="animate-shake">Shake</option>
+                <!-- Add more animation options as needed -->
+            </select>
+            <button onclick="applyTextAnimation()">Apply Text Animation</button>
+            <div id="text-animation" class="hidden">Animated Text</div>
+
+            <!-- Shape Animation Options -->
+            <h4>Animate Shape</h4>
+            <select id="shape-options">
+                <option value="circle">Circle</option>
+                <option value="square">Square</option>
+                <option value="triangle">Triangle</option>
+            </select>
+            <select id="shape-animation-options">
+                <option value="animate-fade">Fade In</option>
+                <option value="animate-scale">Scale Up</option>
+                <option value="animate-rotate">Rotate</option>
+                <option value="animate-slide">Slide In</option>
+                <option value="animate-bounce">Bounce</option>
+                <option value="animate-shake">Shake</option>
+                <!-- Add more animation options as needed -->
+            </select>
+            <button onclick="applyShapeAnimation()">Apply Shape Animation</button>
+            <div id="shape-animation" class="hidden shape"></div>
+        </div>
+
+        <div id="credits-content" class="container hidden">
+            <h3>Credits</h3>
+            <p>Teacher: Mr. Mohan</p>
+            <p>Creator: Mr. Dhejesh</p>
+            <p>Idea: Mr. Mohan and Mr. Dhejesh</p>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            if (username && password) {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('logged-username').innerText = username;
+            } else {
+                alert('Please enter a valid username and password.');
+            }
+        }
+
+        function showSection(section) {
+            document.getElementById('profile-content').classList.add('hidden');
+            document.getElementById('animator-content').classList.add('hidden');
+            document.getElementById('credits-content').classList.add('hidden');
+
+            document.getElementById(`${section}-content`).classList.remove('hidden');
+        }
+
+        function saveProfile() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var biodata = document.getElementById('biodata').value;
+
+            if (name && email && biodata) {
+                document.getElementById('profile-saved').innerText = 'Profile saved successfully!';
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        function applyTextAnimation() {
+            var animation = document.getElementById('text-animation-options').value;
+            var textElement = document.getElementById('text-animation');
+            textElement.className = '';
+            textElement.classList.add(animation);
+            textElement.classList.remove('hidden');
+        }
+
+        function applyShapeAnimation() {
+            var shapeType = document.getElementById('shape-options').value;
+            var animation = document.getElementById('shape-animation-options').value;
+            var shapeElement = document.getElementById('shape-animation');
+            
+            shapeElement.className = `shape ${shapeType}`;
+            shapeElement.classList.add(animation);
+            shapeElement.classList.remove('hidden');
+        }
+    </script>
+
+</body>
+</html>
